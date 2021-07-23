@@ -13,24 +13,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+
+
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/products', [\App\Http\Controllers\ProductsController::class, 'index'])->name('products');
     Route::get('/products/{product}', [\App\Http\Controllers\ProductsController::class, 'show'])->name('products.show');
     Route::get('/products/new', [\App\Http\Controllers\ProductsController::class, 'new'])->name('products.new');
     Route::post('/products', [\App\Http\Controllers\ProductsController::class, 'store']);
-    Route::get('/products', [\App\Http\Controllers\ProductsController::class, 'index'])->name('products');
 
+    Route::get('/inventory', [\App\Http\Controllers\InventoryController::class, 'index'])->name('inventory');
     Route::get('/inventory/{sku}', [\App\Http\Controllers\InventoryController::class, 'show'])->name('inventory.show');
     Route::get('/inventory/new', [\App\Http\Controllers\InventoryController::class, 'new'])->name('inventory.new');
     Route::post('/inventory', [\App\Http\Controllers\InventoryController::class, 'store']);
-    Route::get('/inventory', [\App\Http\Controllers\InventoryController::class, 'index'])->name('inventory');
+
+    Route::get('/', function () {
+        return redirect('/dashboard');
+    });
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 });
 
 require __DIR__.'/auth.php';
